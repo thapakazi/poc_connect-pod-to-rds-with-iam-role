@@ -1,0 +1,40 @@
+#+TITLE: Self Note
+#+DATE: Thursday, Jun 03 2021
+
+* Self Note
+  
+  #+begin_quote
+  Frankly idc, if you can't understand any of these :P
+  This resource is all rellated to EKS on AWS, IAM
+  #+end_quote
+  
+  Nothing Facny; just dumping resources, I explored in last few weeks:
+
+  - connect rds with pod iam role
+  
+  - Res:
+    - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.Python.html
+
+    - https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts
+
+** Motivation
+   - when attaching iam role to a pod 
+     - we get these two env variables via admission controller mutating blah...
+       #+begin_src yaml
+env:
+  - name: AWS_DEFAULT_REGION
+    value: my-region-1 
+  - name: AWS_REGION
+    value: my-region-1 
+  - name: AWS_ROLE_ARN
+    value: arn:aws:iam::ACCOUNT_ID:role/sth_blah_web_identity_assume_role
+  - name: AWS_WEB_IDENTITY_TOKEN_FILE
+    value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+       #+end_src
+
+
+   - Which we can use ~AWS_WEB_IDENTITY_TOKEN_FILE~ and ~AWS_ROLE_ARN~ to connect to services like RDS :D
+     -  eg: rds.py uses latest [[https://docs.amazonaws.cn/en_us/eks/latest/userguide/iam-roles-for-service-accounts-minimum-sdk.html][botocore]] which understand those env variable to establish connection to rds
+
+   - That is it :D
+     - simple right, but it took me 10+hrs to make sense of it :see_no_evil: 
